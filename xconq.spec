@@ -1,56 +1,65 @@
-Summary: X-Conquest scriptable multiplayer wargame
-Name: xconq
-Version: 7.2.2
-Release: 1
-Group: X11/Games/Strategy
-Source: xconq-%{PACKAGE_VERSION}.tar.gz
-Copyright: GPL
-BuildRoot: /tmp/xconq-root
+Summary:	X-Conquest scriptable multiplayer wargame
+Summary(pl):	X-Conquest - skryptowalna gra wojenna dla wielu graczy
+Name:		xconq
+Version:	7.2.2
+Release:	1
+License:	GPL
+Group:		X11/Applications/Games/Strategy
+Source0:	%{name}-%{version}.tar.gz
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_prefix		/usr/X11R6
+%define		_mandir		%{_prefix}/man
 
 %description
-This is the newest release of xconq packaged for RedHat Linux.  X-conquest
-is a multi-player strategic wargame.  Newer releases of xconq do support
-a scripting engine as well as many other enhancements.  Many people will
-probably debate my choice of file locations.
+X-conquest is a multi-player strategic wargame. Newer releases of
+xconq do support a scripting engine as well as many other
+enhancements.
+
+%description -l pl
+X-conquest to strategiczna gra wojenna dla wielu graczy. Nowe wersje
+xconq obs³uguj± silnik skryptowy oraz wiele innych rozszerzeñ.
 
 %prep
-%setup
-./configure --prefix=/usr
+%setup -q
+
 %build
-make datadir=/var/lib/games/xconq docdir=/usr/doc
+%configure
+%{__make} \
+	datadir=/var/lib/games/xconq \
+	docdir=%{_docdir}
 
 %install
-mkdir -p $RPM_BUILD_ROOT/var/lib/games
-make prefix=$RPM_BUILD_ROOT/usr datadir=$RPM_BUILD_ROOT/var/lib/games/xconq docdir=$RPM+BUILD_ROOT/usr/doc install
-cd doc ; make prefix=$RPM_BUILD_ROOT/usr install-info
-%files
-%doc COPYING README INSTALL NEWS
+rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/var/lib/games
 
-/usr/bin/xconq
-/usr/bin/imf2x
-/usr/bin/x2imf
-/usr/bin/xshowimf
-/usr/bin/cconq
-/usr/man/man6/xconq.6
-/usr/man/man6/cconq.6
+%{__make} install \
+	prefix=$RPM_BUILD_ROOT%{_prefix} \
+	datadir=$RPM_BUILD_ROOT/var/lib/games/xconq \
+	docdir=$RPM_BUILD_ROOT%{_docdir}
+
+%{__make} -C doc install-info \
+	prefix=$RPM_BUILD_ROOT%{_prefix}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
+
+%postun
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
+
+%files
+%defattr(644,root,root,755)
+%doc README INSTALL NEWS
+%attr(755,root,root) %{_bindir}/xconq
+%attr(755,root,root) %{_bindir}/imf2x
+%attr(755,root,root) %{_bindir}/x2imf
+%attr(755,root,root) %{_bindir}/xshowimf
+%attr(755,root,root) %{_bindir}/cconq
+%{_mandir}/man6/xconq.6*
+%{_mandir}/man6/cconq.6*
 /var/lib/games/xconq
-/usr/info/xcdesign.info
-/usr/info/xcdesign.info-1
-/usr/info/xcdesign.info-10
-/usr/info/xcdesign.info-11
-/usr/info/xcdesign.info-12
-/usr/info/xcdesign.info-13
-/usr/info/xcdesign.info-2
-/usr/info/xcdesign.info-3
-/usr/info/xcdesign.info-4
-/usr/info/xcdesign.info-5
-/usr/info/xcdesign.info-6
-/usr/info/xcdesign.info-7
-/usr/info/xcdesign.info-8
-/usr/info/xcdesign.info-9
-/usr/info/xconq.info
-/usr/info/xconq.info-1
-/usr/info/xconq.info-2
-/usr/info/xconq.info-3
-/usr/info/xconq.info-4
-/usr/info/xconq.info-5
+%{_infodir}/xcdesign.info*
+%{_infodir}/xconq.info*
