@@ -1,5 +1,5 @@
 Summary:	X-Conquest scriptable multiplayer wargame
-Summary(pl.UTF-8):   X-Conquest - skryptowalna gra wojenna dla wielu graczy
+Summary(pl.UTF-8):	X-Conquest - skryptowalna gra wojenna dla wielu graczy
 Name:		xconq
 Version:	7.2.2
 Release:	1
